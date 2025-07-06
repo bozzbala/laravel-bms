@@ -25,7 +25,7 @@ class PostResource extends JsonResource
             ],
             'categories' => $this->categories->pluck('name'),
             'tags'       => $this->tags->pluck('name'),
-            'image_url'  => $this->featured_image
+            'featured_image' => $this->featured_image
                 ? url('storage/' . $this->featured_image)
                 : null,
             'created_at' => $this->created_at->toDateTimeString(),

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -9,10 +10,11 @@ use Illuminate\Database\Schema\Blueprint;
 use App\Http\Requests\StorePostRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Http\Resources\PostResource;
+use App\Traits\HandlesImageUpload;
 
 class PostController extends Controller
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests, HandlesImageUpload;
     /**
      * Display a listing of the resource.
      */
@@ -40,8 +42,7 @@ class PostController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('featured_image')) {
-            $path = $request->file('featured_image')->store('posts', 'public');
-            $data['featured_image'] = $path;
+            $data['featured_image'] = $this->uploadImage($request->file('featured_image'), 'posts');
         }
 
         $data['author_id'] = $request->user()->id;
@@ -89,8 +90,11 @@ class PostController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('featured_image')) {
-            $path = $request->file('featured_image')->store('posts', 'public');
-            $data['featured_image'] = $path;
+            if ($post->featured_image) {
+                $this->deleteImage($post->featured_image);
+            }
+
+            $data['featured_image'] = $this->uploadImage($request->file('image'), 'posts');
         }
 
         $post->update($data);

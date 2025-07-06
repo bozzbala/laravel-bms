@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use Spatie\Permission\Models\Role;
 use App\Models\User;
-use App\Http\Controllers\PostController;
+use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\TagController;
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
@@ -32,8 +34,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     Route::apiResource('posts', PostController::class);
-    Route::apiResource('categories', \App\Http\Controllers\Api\CategoryController::class);
-    Route::apiResource('tags', \App\Http\Controllers\Api\TagController::class);
+    Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('tags', TagController::class);
 });
 
 Route::post('/register', [AuthController::class, 'register']);
