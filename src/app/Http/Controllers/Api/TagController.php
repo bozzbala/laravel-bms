@@ -17,7 +17,7 @@ class TagController extends Controller
     public function store(Request $request)
     {
         $request->validate(['name' => 'required|string|max:255|unique:tags']);
-        return Tag::create(['name' => $request->name]);
+        return new TagResource(Tag::create(['name' => $request->name]));
     }
 
     public function show(Tag $tag)
