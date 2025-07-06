@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Http\Resources\CategoryResource;
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -14,10 +16,10 @@ class CategoryController extends Controller
         return CategoryResource::collection(Category::all());
     }
 
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        $request->validate(['name' => 'required|string|max:255|unique:categories']);
-        return new CategoryResource(Category::create(['name' => $request->name]));
+        $category = Category::create($request->validated());
+        return new CategoryResource($category);
     }
 
     public function show(Category $category)
@@ -25,10 +27,9 @@ class CategoryController extends Controller
         return $category;
     }
 
-    public function update(Request $request, Category $category)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $request->validate(['name' => 'required|string|max:255|unique:categories,name,' . $category->id]);
-        $category->update(['name' => $request->name]);
+        $category->update($request->validated());
         return new CategoryResource($category);
     }
 
