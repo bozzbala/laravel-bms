@@ -11,7 +11,7 @@ class StoreCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()?->can('manage_categories');
+        return true;
     }
 
     /**
