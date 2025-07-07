@@ -117,11 +117,38 @@ class AuthController extends Controller
      *     summary="Текущий пользователь",
      *     tags={"Auth"},
      *     security={{"sanctum":{}}},
-     *     @OA\Response(response=200, description="Данные пользователя")
+     *     @OA\Response(
+     *         response=200,
+     *         description="Данные пользователя",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="integer", example=1),
+     *             @OA\Property(property="name", type="string", example="Temirlan"),
+     *             @OA\Property(property="email", type="string", example="user@example.com"),
+     *             @OA\Property(
+     *                 property="roles",
+     *                 type="array",
+     *                 @OA\Items(type="string", example="Admin")
+     *             ),
+     *             @OA\Property(
+     *                 property="permissions",
+     *                 type="array",
+     *                 @OA\Items(type="string", example="manage_posts")
+     *             )
+     *         )
+     *     )
      * )
      */
     public function me(Request $request)
     {
-        return response()->json($request->user());
+        $user = $request->user();
+
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'roles' => $user->getRoleNames(),
+            'permissions' => $user->getPermissionsViaRoles()->pluck('name'),
+        ]);
     }
+
 }
